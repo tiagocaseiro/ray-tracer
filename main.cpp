@@ -27,7 +27,7 @@ auto calculateColor(const Ray& ray) {
     return glm::mix(glm::vec3{1.0, 1.0, 1.0}, glm::vec3{0.5, 0.7, 1.0}, t);
 }
 
-void write(std::ostream& out, glm::vec3 color) {
+void write(std::ostream& out, const glm::vec3& color) {
     out << static_cast<int>(255.999 * color.x) << ' ' << static_cast<int>(255.999 * color.y) << ' '
         << static_cast<int>(255.999 * color.z) << '\n';
 }
