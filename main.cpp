@@ -43,8 +43,16 @@ int main(int, char**) {
             auto u = float(j) / (image_width - 1);
             auto v = float(i) / (image_height - 1);
             Ray ray(origin, lower_left_corner + u * horizontal + v * vertical - origin);
-            auto color = sphere.intersects(ray) ? sphere.color : calculateColor(ray);
-            write(output, color);
+            if (auto hit = sphere.intersects(ray)) {
+                auto t      = *hit;
+                auto p      = ray.at(t);
+                auto normal = glm::normalize(p - sphere.center);
+                auto color  = 0.5f * (normal + 1.0f);
+                write(output, color);
+            } else {
+                auto color = calculateColor(ray);
+                write(output, color);
+            }
         }
     }
     return 0;
