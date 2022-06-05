@@ -8,16 +8,13 @@
 
 #include "camera.hpp"
 #include "figure.hpp"
+#include "image.hpp"
 #include "ray.hpp"
 #include "utilities.hpp"
 
 using World = std::vector<std::unique_ptr<Figure>>;
 
-// Image
 constexpr auto aspect_ratio      = 16.f / 9.f;
-constexpr auto image_width       = 400;
-constexpr auto image_height      = static_cast<int>(image_width / aspect_ratio);
-constexpr auto camera            = Camera(aspect_ratio, 2.0f, 1.0f);
 constexpr auto tmin              = std::numeric_limits<float>::min();
 constexpr auto samples_per_pixel = 100;
 
@@ -27,13 +24,12 @@ auto calculateColor(const Ray& ray) {
     return glm::mix(glm::vec3{1.0, 1.0, 1.0}, glm::vec3{0.5, 0.7, 1.0}, t);
 }
 
-void writeColor(std::ostream& out, const glm::vec3& color) {
-    auto r = std::clamp(color.x / float(samples_per_pixel), 0.0f, 0.9999f);
-    auto g = std::clamp(color.y / float(samples_per_pixel), 0.0f, 0.9999f);
-    auto b = std::clamp(color.z / float(samples_per_pixel), 0.0f, 0.9999f);
-
-    out << static_cast<int>(255.999 * r) << ' ' << static_cast<int>(255.999 * g) << ' '
-        << static_cast<int>(255.999 * b) << '\n';
+void writeColor(Image& image, glm::vec3 color) {
+    color = {
+        255.999 * std::clamp(color.x / float(samples_per_pixel), 0.0f, 0.9999f),
+        255.999 * std::clamp(color.y / float(samples_per_pixel), 0.0f, 0.9999f),
+        255.999 * std::clamp(color.z / float(samples_per_pixel), 0.0f, 0.9999f)};
+    image << color;
 }
 
 auto getColor(const World& world, Ray ray) {
@@ -53,25 +49,26 @@ auto getColor(const World& world, Ray ray) {
 }
 
 int main(int, char**) {
-    std::ofstream output{"./output.ppm"};
-    output << "P3\n" << image_width << " " << image_height << "\n255\n";
+    constexpr auto camera = Camera(aspect_ratio, 2.0f, 1.0f);
 
-    World world;
+    auto image = Image(aspect_ratio, 400, "./output.ppm");
+    auto world = World();
+
     world.push_back(std::make_unique<Sphere>(glm::vec3{0, 0, -1}, 0.5f));
     world.push_back(std::make_unique<Sphere>(glm::vec3{0, -100.5, -1}, 100.0f));
 
-    for (auto i = image_height - 1; i >= 0; i--) {
-        for (auto j = 0; j < image_width; j++) {
+    for (auto i = image.height - 1; i >= 0; i--) {
+        for (auto j = 0; j < image.width; j++) {
             auto color = glm::vec3();
 
             for (auto s = 0; s < samples_per_pixel; s++) {
-                auto u   = float(j + random<float>()) / (image_width - 1);
-                auto v   = float(i + random<float>()) / (image_height - 1);
+                auto u   = float(j + random_value()) / (image.width - 1);
+                auto v   = float(i + random_value()) / (image.height - 1);
                 auto ray = camera.generate(u, v);
                 color += getColor(world, ray);
             }
 
-            writeColor(output, color);
+            writeColor(image, color);
         }
     }
     return 0;
