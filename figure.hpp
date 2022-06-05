@@ -9,27 +9,28 @@
  * @brief point, normal, t, front face
  *
  */
-using Hit = std::tuple<glm::vec3, glm::vec3, float, bool>;
-
+using Point  = vec3;
+using Normal = vec3;
+using Hit    = std::tuple<Point, Normal, double, bool>;
 class Figure {
   public:
-    // Figure(const glm::vec3& _color) : color{_color} {}
-    Figure()                                                                            = default;
-    virtual ~Figure()                                                                   = default;
-    virtual std::optional<Hit> intersects(const Ray& ray, float tmin, float tmax) const = 0;
+    // Figure(const vec3& _color) : color{_color} {}
+    Figure()                                                                              = default;
+    virtual ~Figure()                                                                     = default;
+    virtual std::optional<Hit> intersects(const Ray& ray, double tmin, double tmax) const = 0;
 
-    // const glm::vec3 color;
+    // const vec3 color;
 };
 
 class Sphere : public Figure {
   public:
     Sphere(
-        // const glm::vec3& _color,
-        const glm::vec3& _center,
-        float _radius)
+        // const vec3& _color,
+        const vec3& _center,
+        double _radius)
       : Figure(), radius{_radius}, center{_center} {}
 
-    virtual std::optional<Hit> intersects(const Ray& ray, float tmin, float tmax) const override {
+    virtual std::optional<Hit> intersects(const Ray& ray, double tmin, double tmax) const override {
         auto ac           = ray.origin - center;
         auto a            = glm::dot(ray.direction, ray.direction);
         auto half_b       = glm::dot(ray.direction, ac);
@@ -55,6 +56,6 @@ class Sphere : public Figure {
         return {std::make_tuple(std::move(point), std::move(normal), t, front_face)};
     }
 
-    const float radius;
-    const glm::vec3 center;
+    const double radius;
+    const vec3 center;
 };
