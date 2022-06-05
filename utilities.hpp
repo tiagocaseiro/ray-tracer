@@ -3,7 +3,7 @@
 #include <iostream>
 #include <random>
 
-template <typename T>
+template <typename T = float>
 auto random() {
     static std::uniform_real_distribution<T> distribution(0.0, 1.0);
     static std::mt19937 generator;
