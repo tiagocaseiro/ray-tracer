@@ -1,34 +1,33 @@
 #pragma once
 
+#include <functional>
 #include <optional>
 #include <tuple>
 
 #include "ray.hpp"
 
-/**
- * @brief point, normal, t, front face
- *
- */
-using Point  = vec3;
-using Normal = vec3;
-using Hit    = std::tuple<Point, Normal, double, bool>;
+class Material;
+struct Hit {
+    vec3 point;
+    vec3 normal;
+    double t;
+    bool front_face;
+    std::shared_ptr<Material> material;
+};
+
 class Figure {
   public:
-    // Figure(const vec3& _color) : color{_color} {}
-    Figure()                                                                              = default;
+    Figure(std::shared_ptr<Material> _material) : material{std::move(_material)} {}
     virtual ~Figure()                                                                     = default;
     virtual std::optional<Hit> intersects(const Ray& ray, double tmin, double tmax) const = 0;
 
-    // const vec3 color;
+    const std::shared_ptr<Material> material;
 };
 
 class Sphere : public Figure {
   public:
-    Sphere(
-        // const vec3& _color,
-        const vec3& _center,
-        double _radius)
-      : Figure(), radius{_radius}, center{_center} {}
+    Sphere(const vec3& _center, double _radius, std::shared_ptr<Material> _material)
+      : Figure(std::move(_material)), radius{_radius}, center{_center} {}
 
     virtual std::optional<Hit> intersects(const Ray& ray, double tmin, double tmax) const override {
         auto ac           = ray.origin - center;
@@ -53,7 +52,8 @@ class Sphere : public Figure {
         if (!front_face)
             normal = -normal;
 
-        return {std::make_tuple(std::move(point), std::move(normal), t, front_face)};
+        return std::make_optional<Hit>(
+            std::move(point), std::move(normal), t, front_face, material);
     }
 
     const double radius;

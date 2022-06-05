@@ -9,6 +9,7 @@
 #include "camera.hpp"
 #include "figure.hpp"
 #include "image.hpp"
+#include "material.hpp"
 #include "ray.hpp"
 #include "utilities.hpp"
 
@@ -40,21 +41,20 @@ auto getColor(const Ray& ray, const World& world, int depth) {
 
     std::optional<Hit> hit;
     for (const auto& figure : world) {
-        auto tmax = hit ? std::get<2>(*hit) : std::numeric_limits<double>::infinity();
+        auto tmax = hit ? hit->t : std::numeric_limits<double>::infinity();
         if (auto temp = figure->intersects(ray, tmin, tmax)) {
-            if (auto t = std::get<2>(*temp); t < tmax)
-                hit = temp;
+            if (auto t = temp->t; t < tmax)
+                hit = std::move(temp);
         }
     }
 
-    if (hit) {
-        auto& point  = std::get<0>(*hit);
-        auto& normal = std::get<1>(*hit);
-        auto target  = point + normal + glm::normalize(random<vec3>(-1.0, 1.0));
-        return 0.5 * getColor({point, glm::normalize(target - point)}, world, --depth);
-    }
+    if (!hit)
+        return calculateColor(ray);
 
-    return calculateColor(ray);
+    if (auto scattered = hit->material->scatter(*hit, ray))
+        return scattered->attenuation * getColor(scattered->ray, world, --depth);
+
+    return vec3{};
 }
 
 int main(int, char**) {
@@ -63,8 +63,15 @@ int main(int, char**) {
     auto image = Image(aspect_ratio, 400, "./output.ppm");
     auto world = World();
 
-    world.push_back(std::make_unique<Sphere>(vec3{0, 0, -1}, 0.5));
-    world.push_back(std::make_unique<Sphere>(vec3{0, -100.5, -1}, 100.0));
+    auto material_ground = std::make_shared<Lambertian>(vec3(0.8, 0.8, 0.0));
+    auto material_center = std::make_shared<Lambertian>(vec3(0.7, 0.3, 0.3));
+    auto material_left   = std::make_shared<Metal>(vec3(0.8, 0.8, 0.8), 0.3);
+    auto material_right  = std::make_shared<Metal>(vec3(0.8, 0.6, 0.2), 1.0);
+
+    world.push_back(std::make_unique<Sphere>(vec3(0.0, -100.5, -1.0), 100.0, material_ground));
+    world.push_back(std::make_unique<Sphere>(vec3(0.0, 0.0, -1.0), 0.5, material_center));
+    world.push_back(std::make_unique<Sphere>(vec3(-1.0, 0.0, -1.0), 0.5, material_left));
+    world.push_back(std::make_unique<Sphere>(vec3(1.0, 0.0, -1.0), 0.5, material_right));
 
     for (auto i = image.height - 1; i >= 0; i--) {
         std::cerr << "\rScanlines remaining: " << i << ' ' << std::flush;
