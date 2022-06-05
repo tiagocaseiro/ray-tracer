@@ -5,10 +5,10 @@
 
 #include "ray.hpp"
 
+using Hit = std::tuple<glm::vec3, glm::vec3, float, bool>;
+
 class Figure {
   public:
-    using Hit = std::tuple<glm::vec3, glm::vec3, float, bool>;
-
     // Figure(const glm::vec3& _color) : color{_color} {}
     Figure()                                                                            = default;
     virtual ~Figure()                                                                   = default;

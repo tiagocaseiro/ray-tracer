@@ -33,7 +33,7 @@ void writeColor(Image& image, glm::vec3 color) {
 }
 
 auto getColor(const World& world, Ray ray) {
-    std::optional<Figure::Hit> hit;
+    std::optional<Hit> hit;
     for (const auto& figure : world) {
         auto tmax = hit ? std::get<2>(*hit) : std::numeric_limits<float>::max();
         if (auto temp = figure->intersects(ray, tmin, tmax)) {
