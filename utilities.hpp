@@ -3,21 +3,21 @@
 #include <iostream>
 #include <random>
 
+using vec3 = glm::vec<3, double, glm::defaultp>;
+
 template <typename T>
-T random(float a = 0.0f, float b = 1.0f);
+T random(double a = 0.0f, double b = 1.0f);
 
 template <>
-float random<float>(float a, float b) {
-    static std::uniform_real_distribution<float> distribution(a, b);
+double random<double>(double a, double b) {
+    std::uniform_real_distribution<double> distribution(a, b);
     static std::mt19937 generator;
     return distribution(generator);
 }
 
 template <>
-glm::vec3 random<glm::vec3>(float a, float b) {
-    static std::uniform_real_distribution<float> distribution(0.0, 1.0);
-    static std::mt19937 generator;
-    return {random<float>(a, b), random<float>(a, b), random<float>(a, b)};
+vec3 random<vec3>(double a, double b) {
+    return {random<double>(a, b), random<double>(a, b), random<double>(a, b)};
 }
 
 auto& operator<<(std::ostream& o, const glm::vec3& v) {

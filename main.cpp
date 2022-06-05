@@ -50,7 +50,7 @@ auto getColor(const Ray& ray, const World& world, int depth) {
     if (hit) {
         auto& point  = std::get<0>(*hit);
         auto& normal = std::get<1>(*hit);
-        auto target  = point + normal + glm::normalize(random<vec3>());
+        auto target  = point + normal + glm::normalize(random<vec3>(-1.0, 1.0));
         return 0.5 * getColor({point, glm::normalize(target - point)}, world, --depth);
     }
 
