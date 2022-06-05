@@ -62,8 +62,8 @@ int main(int, char**) {
             auto color = glm::vec3();
 
             for (auto s = 0; s < samples_per_pixel; s++) {
-                auto u   = float(j + random_value()) / (image.width - 1);
-                auto v   = float(i + random_value()) / (image.height - 1);
+                auto u   = float(j + random<float>()) / (image.width - 1);
+                auto v   = float(i + random<float>()) / (image.height - 1);
                 auto ray = camera.generate(u, v);
                 color += getColor(world, ray);
             }
