@@ -5,6 +5,10 @@
 
 #include "ray.hpp"
 
+/**
+ * @brief point, normal, t, front face
+ *
+ */
 using Hit = std::tuple<glm::vec3, glm::vec3, float, bool>;
 
 class Figure {

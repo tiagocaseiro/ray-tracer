@@ -15,8 +15,17 @@
 using World = std::vector<std::unique_ptr<Figure>>;
 
 constexpr auto aspect_ratio      = 16.f / 9.f;
-constexpr auto tmin              = std::numeric_limits<float>::min();
+constexpr auto tmin              = 0.001;
 constexpr auto samples_per_pixel = 100;
+constexpr auto depth             = 50;
+constexpr auto scale             = 1.0f / samples_per_pixel;
+
+auto getRandomUnitVector() {
+    auto u = random<glm::vec3>(-1.0, 1.0);
+    while (glm::length(u) > 1.0f)
+        u = random<glm::vec3>(-1.0, 1.0);
+    return u;
+}
 
 auto calculateColor(const Ray& ray) {
     auto direction = glm::normalize(ray.direction);
@@ -25,26 +34,33 @@ auto calculateColor(const Ray& ray) {
 }
 
 void writeColor(Image& image, glm::vec3 color) {
-    color = {
-        255.999 * std::clamp(color.x / float(samples_per_pixel), 0.0f, 0.9999f),
-        255.999 * std::clamp(color.y / float(samples_per_pixel), 0.0f, 0.9999f),
-        255.999 * std::clamp(color.z / float(samples_per_pixel), 0.0f, 0.9999f)};
+    color *= scale;                           // Average it by dividing by number of samples
+    color = glm::sqrt(color);                 // Apply gamma 2.0
+    color = glm::clamp(color, 0.0f, 0.9999f); // Clamp values 0.0 <= color < 1.0
+    color *= 256;                             // Translate to PPM color
     image << color;
 }
 
-auto getColor(const World& world, Ray ray) {
+auto getColor(const Ray& ray, const World& world, int depth) {
+    if (depth == 0)
+        return glm::vec3{};
+
     std::optional<Hit> hit;
     for (const auto& figure : world) {
-        auto tmax = hit ? std::get<2>(*hit) : std::numeric_limits<float>::max();
+        auto tmax = hit ? std::get<2>(*hit) : std::numeric_limits<float>::infinity();
         if (auto temp = figure->intersects(ray, tmin, tmax)) {
             if (auto t = std::get<2>(*temp); t < tmax)
                 hit = temp;
         }
     }
+
     if (hit) {
-        const auto& normal = std::get<1>(*hit);
-        return 0.5f * (normal + 1.0f);
+        auto& point  = std::get<0>(*hit);
+        auto& normal = std::get<1>(*hit);
+        auto target  = point + normal + getRandomUnitVector();
+        return 0.5f * getColor({point, glm::normalize(target - point)}, world, --depth);
     }
+
     return calculateColor(ray);
 }
 
@@ -58,6 +74,7 @@ int main(int, char**) {
     world.push_back(std::make_unique<Sphere>(glm::vec3{0, -100.5, -1}, 100.0f));
 
     for (auto i = image.height - 1; i >= 0; i--) {
+        std::cerr << "\rScanlines remaining: " << i << ' ' << std::flush;
         for (auto j = 0; j < image.width; j++) {
             auto color = glm::vec3();
 
@@ -65,7 +82,7 @@ int main(int, char**) {
                 auto u   = float(j + random<float>()) / (image.width - 1);
                 auto v   = float(i + random<float>()) / (image.height - 1);
                 auto ray = camera.generate(u, v);
-                color += getColor(world, ray);
+                color += getColor(ray, world, depth);
             }
 
             writeColor(image, color);
