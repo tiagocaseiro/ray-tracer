@@ -20,6 +20,17 @@ vec3 random<vec3>(double a, double b) {
     return {random<double>(a, b), random<double>(a, b), random<double>(a, b)};
 }
 
+inline vec3 random_in_unit_sphere() {
+    auto p = random<vec3>(-1, 1);
+    while (glm::length(p) >= 1)
+        p = random<vec3>(-1, 1);
+    return p;
+}
+
+inline vec3 random_unit_vector() {
+    return glm::normalize(random_in_unit_sphere());
+}
+
 auto& operator<<(std::ostream& o, const glm::vec3& v) {
     o << v.x << " " << v.y << " " << v.z;
     return o;
