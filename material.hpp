@@ -56,7 +56,7 @@ class Dielectric : public Material {
     }
     const double refractive_index;
 
-  private:
+  protected:
     glm::vec3 refract(const Hit& hit, const Ray& ray, double ratio) const {
         auto perpendicular =
             ratio * (ray.direction + glm::dot(hit.normal, -ray.direction) * hit.normal);
