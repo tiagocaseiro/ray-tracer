@@ -44,3 +44,25 @@ class Metal : public Material {
     const vec3 albedo;
     const double fuzz;
 };
+
+class Dielectric : public Material {
+  public:
+    Dielectric(double _refractive_index) : refractive_index{_refractive_index} {}
+    virtual std::optional<Scatter> scatter(const Hit& hit, const Ray& ray) const override {
+        auto attenuation = glm::vec3(1.0);
+        auto ratio       = hit.front_face ? 1.0 / refractive_index : refractive_index;
+        auto refracted   = refract(hit, ray, ratio);
+        return std::make_optional<Scatter>(Ray{hit.point, refracted}, attenuation);
+    }
+    const double refractive_index;
+
+  private:
+    glm::vec3 refract(const Hit& hit, const Ray& ray, double ratio) const {
+        auto perpendicular =
+            ratio * (ray.direction + glm::dot(hit.normal, -ray.direction) * hit.normal);
+        auto parallel =
+            -glm::sqrt(std::abs(1.0 - std::min(glm::dot(perpendicular, perpendicular), 1.0)))
+            * hit.normal;
+        return perpendicular + parallel;
+    }
+};

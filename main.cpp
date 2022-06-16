@@ -22,8 +22,7 @@ constexpr auto depth             = 50;
 constexpr auto scale             = 1.0 / samples_per_pixel;
 
 auto calculateColor(const Ray& ray) {
-    auto direction = glm::normalize(ray.direction);
-    auto t         = 0.5 * (direction.y + 1.0); // Normalize to be between 0 and 1
+    auto t = 0.5 * (ray.direction.y + 1.0); // Normalize to be between 0 and 1
     return glm::mix(vec3{1.0, 1.0, 1.0}, vec3{0.5, 0.7, 1.0}, t);
 }
 
@@ -41,11 +40,9 @@ auto getColor(const Ray& ray, const World& world, int depth) {
 
     std::optional<Hit> hit;
     for (const auto& figure : world) {
-        auto tmax = hit ? hit->t : std::numeric_limits<double>::infinity();
-        if (auto temp = figure->intersects(ray, tmin, tmax)) {
-            if (auto t = temp->t; t < tmax)
-                hit = std::move(temp);
-        }
+        auto tmax = hit ? hit->t : std::numeric_limits<double>::max();
+        if (auto temp = figure->intersects(ray, tmin, tmax); temp && temp->t < tmax)
+            hit = std::move(temp);
     }
 
     if (!hit)
@@ -60,12 +57,12 @@ auto getColor(const Ray& ray, const World& world, int depth) {
 int main(int, char**) {
     constexpr auto camera = Camera(aspect_ratio, 2.0, 1.0);
 
-    auto image = Image(aspect_ratio, 400, "./output.ppm");
+    auto image = Image(aspect_ratio, 400, "output.ppm");
     auto world = World();
 
     auto material_ground = std::make_shared<Lambertian>(vec3(0.8, 0.8, 0.0));
-    auto material_center = std::make_shared<Lambertian>(vec3(0.7, 0.3, 0.3));
-    auto material_left   = std::make_shared<Metal>(vec3(0.8, 0.8, 0.8), 0.3);
+    auto material_center = std::make_shared<Dielectric>(1.5);
+    auto material_left   = std::make_shared<Dielectric>(1.5);
     auto material_right  = std::make_shared<Metal>(vec3(0.8, 0.6, 0.2), 1.0);
 
     world.push_back(std::make_unique<Sphere>(vec3(0.0, -100.5, -1.0), 100.0, material_ground));
