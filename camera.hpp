@@ -11,7 +11,7 @@ class Camera {
         lower_left_corner{origin - horizontal / 2.0 - vertical / 2.0 - vec3(0, 0, focal_length)} {}
 
     Ray generate(double u, double v) const {
-        auto direction = glm::normalize(lower_left_corner + u * horizontal + v * vertical - origin);
+        auto direction = lower_left_corner + u * horizontal + v * vertical - origin;
         return {origin, direction};
     }
 

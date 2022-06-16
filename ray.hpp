@@ -6,10 +6,11 @@
 
 class Ray {
   public:
-    Ray(const vec3& _origin, const vec3& _direction) : origin{_origin}, direction{_direction} {}
+    Ray(const vec3& _origin, const vec3& _direction)
+      : origin{_origin}, direction{glm::normalize(_direction)} {}
 
     auto at(double t) const { return origin + t * direction; }
 
     const vec3 origin;
-    const vec3 direction;
+    const vec3 direction; // normalized
 };

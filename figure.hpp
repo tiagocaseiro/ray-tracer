@@ -7,6 +7,7 @@
 #include "ray.hpp"
 
 class Material;
+
 struct Hit {
     vec3 point;
     vec3 normal;
