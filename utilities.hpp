@@ -31,7 +31,18 @@ inline vec3 random_unit_vector() {
     return glm::normalize(random_in_unit_sphere());
 }
 
-auto& operator<<(std::ostream& o, const glm::vec3& v) {
+vec3 reflect(const vec3& direction, const vec3& normal) {
+    return direction - 2 * glm::dot(direction, normal) * normal;
+}
+
+vec3 refract(const auto& hit, const auto& ray, double ratio) {
+    auto perpendicular =
+        ratio * (ray.direction + glm::dot(hit.normal, -ray.direction) * hit.normal);
+    auto parallel = -glm::sqrt(std::abs(1.0 - glm::dot(perpendicular, perpendicular))) * hit.normal;
+    return perpendicular + parallel;
+}
+
+auto& operator<<(std::ostream& o, const vec3& v) {
     o << v.x << " " << v.y << " " << v.z;
     return o;
 }

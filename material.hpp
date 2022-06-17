@@ -35,7 +35,7 @@ class Metal : public Material {
   public:
     Metal(const vec3 _albedo, double _fuzz) : albedo{_albedo}, fuzz{std::min(_fuzz, 1.0)} {}
     virtual std::optional<Scatter> scatter(const Hit& hit, const Ray& ray) const override {
-        auto reflected = glm::reflect(ray.direction, hit.normal);
+        auto reflected = reflect(ray.direction, hit.normal);
         auto scattered = Ray(hit.point, reflected + fuzz * random_unit_vector());
         return glm::dot(scattered.direction, hit.normal) > 0
             ? std::make_optional<Scatter>(scattered, albedo)
@@ -49,20 +49,22 @@ class Dielectric : public Material {
   public:
     Dielectric(double _refractive_index) : refractive_index{_refractive_index} {}
     virtual std::optional<Scatter> scatter(const Hit& hit, const Ray& ray) const override {
-        auto attenuation = glm::vec3(1.0);
+        auto attenuation = vec3(1.0);
         auto ratio       = hit.front_face ? 1.0 / refractive_index : refractive_index;
-        auto refracted   = refract(hit, ray, ratio);
-        return std::make_optional<Scatter>(Ray{hit.point, refracted}, attenuation);
+        auto cos_theta   = glm::dot(hit.normal, -ray.direction);
+        auto sin_theta   = std::sqrt(1 - cos_theta * cos_theta);
+        auto direction   = sin_theta > 1.0 || reflectance(cos_theta, ratio) > random<double>()
+            ? reflect(ray.direction, hit.normal)
+            : refract(hit, ray, ratio);
+        return std::make_optional<Scatter>(Ray{hit.point, direction}, attenuation);
     }
     const double refractive_index;
 
-  protected:
-    glm::vec3 refract(const Hit& hit, const Ray& ray, double ratio) const {
-        auto perpendicular =
-            ratio * (ray.direction + glm::dot(hit.normal, -ray.direction) * hit.normal);
-        auto parallel =
-            -glm::sqrt(std::abs(1.0 - std::min(glm::dot(perpendicular, perpendicular), 1.0)))
-            * hit.normal;
-        return perpendicular + parallel;
+  private:
+    static constexpr double reflectance(double cosine, double ref_idx) {
+        // Use Schlick's approximation for reflectance.
+        auto r0 = (1 - ref_idx) / (1 + ref_idx);
+        r0      = r0 * r0;
+        return r0 + (1 - r0) * std::pow((1 - cosine), 5);
     }
 };

@@ -61,9 +61,9 @@ int main(int, char**) {
     auto world = World();
 
     auto material_ground = std::make_shared<Lambertian>(vec3(0.8, 0.8, 0.0));
-    auto material_center = std::make_shared<Dielectric>(1.5);
+    auto material_center = std::make_shared<Lambertian>(vec3(0.1, 0.2, 0.5));
     auto material_left   = std::make_shared<Dielectric>(1.5);
-    auto material_right  = std::make_shared<Metal>(vec3(0.8, 0.6, 0.2), 1.0);
+    auto material_right  = std::make_shared<Metal>(vec3(0.8, 0.6, 0.2), 0.0);
 
     world.push_back(std::make_unique<Sphere>(vec3(0.0, -100.5, -1.0), 100.0, material_ground));
     world.push_back(std::make_unique<Sphere>(vec3(0.0, 0.0, -1.0), 0.5, material_center));
