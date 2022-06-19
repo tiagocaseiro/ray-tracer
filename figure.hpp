@@ -48,7 +48,7 @@ class Sphere : public Figure {
         }
 
         auto point      = ray.at(t);
-        auto normal     = glm::normalize(point - center);
+        auto normal     = (point - center) / radius;
         auto front_face = glm::dot(normal, ray.direction) < 0;
         if (!front_face)
             normal = -normal;

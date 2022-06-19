@@ -5,22 +5,28 @@
 #include "utilities.hpp"
 
 #include <glm/trigonometric.hpp>
+
 class Camera {
   public:
-    Camera(double vfov, double aspect_ratio) : origin{} {
-        auto theta           = glm::radians(vfov);
-        auto viewport_height = glm::tan(theta / 2) * 2.0;
-        auto focal_length    = vec3{0, 0, 1};
+    Camera(vec3 look_from, vec3 look_at, vec3 vup, double vfov, double aspect_ratio) {
+        auto h               = glm::tan(glm::radians(vfov) / 2.0);
+        auto viewport_height = h * 2.0;
+        auto viewport_width  = aspect_ratio * viewport_height;
+        auto focal_length    = 1.0;
 
-        vertical          = {0, viewport_height, 0};
-        horizontal        = {viewport_height * aspect_ratio, 0, 0};
-        lower_left_corner = origin - horizontal / 2.0 - vertical / 2.0 - focal_length;
+        auto w = glm::normalize(look_from - look_at);
+        auto u = glm::normalize(glm::cross(vup, w));
+        auto v = glm::cross(w, u);
+
+        origin            = look_from;
+        horizontal        = viewport_width * u;
+        vertical          = viewport_height * v;
+        lower_left_corner = {origin - horizontal / 2.0 - vertical / 2.0 - w};
+    }
+    Ray generate(double s, double t) const {
+        return {origin, lower_left_corner + s * horizontal + t * vertical - origin};
     }
 
-    Ray generate(double u, double v) const {
-        auto direction = lower_left_corner + u * horizontal + v * vertical - origin;
-        return {origin, direction};
-    }
 
   private:
     vec3 origin;
