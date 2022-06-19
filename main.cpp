@@ -56,7 +56,13 @@ auto getColor(const Ray& ray, const World& world, int depth) {
 }
 
 int main(int, char**) {
-    auto camera = Camera(vec3(-2, 2, 1), vec3(0, 0, -1), vec3(0, 1, 0), 20.0, aspect_ratio);
+    auto look_from         = vec3(3, 3, 2);
+    auto look_at           = vec3(0, 0, -1);
+    auto vup               = vec3(0, 1, 0);
+    auto distance_to_focus = glm::length(look_from - look_at);
+    auto aperture          = 2.0;
+
+    auto camera = Camera(look_from, look_at, vup, 20, aspect_ratio, aperture, distance_to_focus);
 
     auto image = Image(aspect_ratio, 400, "output.ppm");
     auto world = World();
