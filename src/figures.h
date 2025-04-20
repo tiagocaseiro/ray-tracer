@@ -2,19 +2,21 @@
 
 #pragma warning(disable : 4514)
 
+#include "mat.h"
 #include "tuple.h"
 
 struct figure
 {
-    figure() = default;
+    figure(const mat4& _transform = mat4::identity()) : transform(_transform)
+    {
+    }
+    mat4 transform;
 };
 
 struct sphere : figure
 {
-    sphere(const tuple _centre, const float _radius) : figure(), centre(_centre), radius(_radius)
-    {
-    }
+    using figure::figure;
 
-    tuple centre;
-    float radius;
+    inline static const tuple centre = make_point();
+    inline static const float radius = 1.0f;
 };

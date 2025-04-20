@@ -4,7 +4,7 @@ project(ray-tracer LANGUAGES CXX)
 
 include_directories(src)
 
-add_executable(ray-tracer src/main.cpp src/tuple.cpp src/common.cpp src/canvas.cpp src/ray.cpp)
+add_executable(ray-tracer src/main.cpp  src/tuple.cpp src/mat.cpp src/ray.cpp src/common.cpp src/canvas.cpp )
 
 target_compile_options(ray-tracer PRIVATE /Wall /WX)
 
@@ -30,18 +30,18 @@ add_executable(
   tests/color_test.cpp
   tests/canvas_test.cpp
   tests/mat_test.cpp
-  tests/ray_test.cpp
   src/tuple.cpp 
+  src/mat.cpp 
+  src/ray.cpp
   src/common.cpp 
   src/canvas.cpp 
-  src/ray.cpp
+  tests/ray_test.cpp
 )
 
 target_link_libraries(
   ray-tracer-tests
   GTest::gtest_main
 )
-
 
 include(GoogleTest)
 gtest_discover_tests(ray-tracer-tests)

@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 
+#include "mat.h"
 #include "ray.h"
 
 TEST(ray, Ctor)
@@ -29,8 +30,8 @@ TEST(ray, Position)
 
 TEST(ray, SphereIntersection)
 {
-    ray r    = ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
-    sphere s = sphere{make_point(), 1.0f};
+    sphere s;
+    ray r = ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
 
     std::vector<intersection> intersections = intersects(r, s);
 
@@ -41,7 +42,6 @@ TEST(ray, SphereIntersection)
     EXPECT_EQ(intersections[1].figure, &s);
 
     r = ray{make_point(0, 1, -5), make_vector(0, 0, 1)};
-    s = sphere{make_point(), 1.0f};
 
     intersections = intersects(r, s);
 
@@ -52,14 +52,12 @@ TEST(ray, SphereIntersection)
     EXPECT_EQ(intersections[1].figure, &s);
 
     r = ray{make_point(0, 2, -5), make_vector(0, 0, 1)};
-    s = sphere{make_point(), 1.0f};
 
     intersections = intersects(r, s);
 
     EXPECT_TRUE(intersections.empty());
 
     r = ray{make_point(0, 0, 0), make_vector(0, 0, 1)};
-    s = sphere{make_point(), 1.0f};
 
     intersections = intersects(r, s);
 
@@ -70,7 +68,6 @@ TEST(ray, SphereIntersection)
     EXPECT_EQ(intersections[1].figure, &s);
 
     r = ray{make_point(0, 0, 5), make_vector(0, 0, 1)};
-    s = sphere{make_point(), 1.0f};
 
     intersections = intersects(r, s);
 
@@ -83,7 +80,7 @@ TEST(ray, SphereIntersection)
 
 TEST(ray, Intersection)
 {
-    sphere s = sphere{make_point(), 1.0f};
+    sphere s;
 
     intersection inter = intersection{3.5, &s};
 
@@ -93,7 +90,7 @@ TEST(ray, Intersection)
 
 TEST(ray, Hit)
 {
-    sphere s = sphere{make_point(), 1.0f};
+    sphere s;
 
     intersection inter1 = {1, &s};
     intersection inter2 = {2, &s};
@@ -126,4 +123,41 @@ TEST(ray, Hit)
 
     EXPECT_TRUE(inter);
     EXPECT_EQ(inter->t, 2);
+}
+
+TEST(ray, Transformation)
+{
+    ray r  = ray{make_point(1, 2, 3), make_vector(0, 1, 0)};
+    mat4 m = translate(3, 4, 5);
+
+    auto rt = m * r;
+
+    EXPECT_EQ(rt.origin, make_point(4, 6, 8));
+    EXPECT_EQ(rt.direction, make_vector(0, 1, 0));
+
+    r = ray{make_point(1, 2, 3), make_vector(0, 1, 0)};
+    m = scale(2, 3, 4);
+
+    rt = m * r;
+
+    EXPECT_EQ(rt.origin, make_point(2, 6, 12));
+    EXPECT_EQ(rt.direction, make_vector(0, 3, 0));
+}
+
+TEST(ray, SphereTransformation)
+{
+    sphere s = sphere{scale(2)};
+    ray r    = ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
+
+    std::vector<intersection> inters = intersects(r, s);
+
+    EXPECT_EQ(inters.size(), 2);
+    // EXPECT_EQ(inters[0].t, 3);
+    // EXPECT_EQ(inters[1].t, 7);
+
+    // s = sphere{translate(5, 0, 0)};
+
+    // inters = intersects(r, s);
+
+    // EXPECT_TRUE(inters.empty());
 }
