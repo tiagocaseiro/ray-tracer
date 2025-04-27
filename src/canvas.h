@@ -1,26 +1,29 @@
 #pragma once
 
-#include <vector>
+#include <filesystem>
+#include <functional>
 #include <iostream>
-#include <filesystem> 
+#include <vector>
 
 #include "tuple.h"
 
 struct canvas
 {
-    canvas(const size_t _width, const size_t _height, const color& default_color = color::black());
+    canvas(const int _width, const int _height, const color& default_color = color::black());
 
-    size_t width;
-    size_t height;
+    int width;
+    int height;
 
-    void paint_pixel(const size_t col, const size_t row, const color&);
+    void paint_pixel(const int col, const int row, const color&);
     void save_to_file(std::filesystem::path);
 
-    const color& pixel_at(const size_t col, const size_t row);
+    void for_each_pixel(std::function<void(int, int)>);
+
+    const color& pixel_at(const int col, const int row);
     const std::vector<color>& get_pixels() const;
-    
+
 private:
     std::vector<color> m_pixels;
 };
 
-std::ostream& operator<<(std::ostream& os,const canvas&);
+std::ostream& operator<<(std::ostream& os, const canvas&);

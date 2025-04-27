@@ -12,8 +12,8 @@ struct sphere;
 
 struct ray
 {
-    tuple origin;
-    tuple direction;
+    tuple origin    = make_point();
+    tuple direction = make_vector();
 };
 
 struct intersection

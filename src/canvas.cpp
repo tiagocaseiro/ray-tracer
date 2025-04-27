@@ -4,17 +4,18 @@
 
 static size_t color_component_from_1_to_255(float component)
 {
-    return static_cast<size_t>(std::clamp(component*255.f, 0.f, 255.f));
-} 
+    return static_cast<size_t>(std::clamp(component * 255.f, 0.f, 255.f));
+}
 
-canvas::canvas(const size_t _width, const size_t _height, const color& default_color): width(_width), height(_height), m_pixels(_width*_height, default_color)
+canvas::canvas(const int _width, const int _height, const color& default_color)
+    : width(_width), height(_height), m_pixels(static_cast<size_t>(_width * _height), default_color)
 {
 }
 
-void canvas::paint_pixel(const size_t col, const size_t row, const color& color)
+void canvas::paint_pixel(const int col, const int row, const color& color)
 {
-    size_t index = row*width + col;
-    if (index >= m_pixels.size())
+    const size_t index = static_cast<size_t>(row * width + col);
+    if(index >= m_pixels.size())
     {
         return;
     }
@@ -25,32 +26,46 @@ void canvas::save_to_file(std::filesystem::path path)
 {
     if(path.has_extension() == false)
     {
-        path +=".ppm";
+        path += ".ppm";
     }
 
-  std::ofstream file{path};
-  file << "P3" << std::endl;
-  file << width << " " << height << std::endl;
-  file << 255 << std::endl;
-  size_t i = 0;
-  for (auto& pixel : m_pixels)
-  {
-    file << color_component_from_1_to_255(pixel.r) << " " << color_component_from_1_to_255(pixel.g)  << " " << color_component_from_1_to_255(pixel.b);
-    i++;
-    if (i == width){
-        i = 0;
-        file << std::endl;
-    }else
+    std::ofstream file{path};
+    file << "P3" << std::endl;
+    file << width << " " << height << std::endl;
+    file << 255 << std::endl;
+    int i = 0;
+    for(auto& pixel : m_pixels)
     {
-        file << " ";
+        file << color_component_from_1_to_255(pixel.r) << " " << color_component_from_1_to_255(pixel.g) << " "
+             << color_component_from_1_to_255(pixel.b);
+        i++;
+        if(i == width)
+        {
+            i = 0;
+            file << std::endl;
+        }
+        else
+        {
+            file << " ";
+        }
     }
-  }
 }
 
-const color& canvas::pixel_at(const size_t col, const size_t row)
+void canvas::for_each_pixel(std::function<void(int, int)> on_pixel)
 {
-    size_t index = row*width + col;
-    if (index >= m_pixels.size())
+    for(auto i = 0; i != width; i++)
+    {
+        for(auto j = 0; j != height; j++)
+        {
+            on_pixel(i, j);
+        }
+    }
+}
+
+const color& canvas::pixel_at(const int col, const int row)
+{
+    const size_t index = static_cast<size_t>(row * width + col);
+    if(index >= m_pixels.size())
     {
         return color::black();
     }
@@ -64,10 +79,11 @@ const std::vector<color>& canvas::get_pixels() const
 
 std::ostream& operator<<(std::ostream& os, const canvas& canvas)
 {
-    size_t i = 0;
-    for (auto& pixel : canvas.get_pixels())
+    int i = 0;
+    for(auto& pixel : canvas.get_pixels())
     {
-        if (i == canvas.width){
+        if(i == canvas.width)
+        {
             i = 0;
             os << std::endl;
         }
