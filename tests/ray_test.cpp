@@ -152,12 +152,12 @@ TEST(ray, SphereTransformation)
     std::vector<intersection> inters = intersects(r, s);
 
     EXPECT_EQ(inters.size(), 2);
-    // EXPECT_EQ(inters[0].t, 3);
-    // EXPECT_EQ(inters[1].t, 7);
+    EXPECT_EQ(inters[0].t, 3);
+    EXPECT_EQ(inters[1].t, 7);
 
-    // s = sphere{translate(5, 0, 0)};
+    s = sphere{translate(5, 0, 0)};
 
-    // inters = intersects(r, s);
+    inters = intersects(r, s);
 
-    // EXPECT_TRUE(inters.empty());
+    EXPECT_TRUE(inters.empty());
 }
