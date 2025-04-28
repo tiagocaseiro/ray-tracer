@@ -11,6 +11,7 @@ add_executable(ray-tracer
   src/ray.cpp 
   src/common.cpp 
   src/canvas.cpp 
+  src/lighting.cpp
 )
 
 target_compile_options(ray-tracer PRIVATE /Wall /WX)
@@ -38,11 +39,13 @@ add_executable(
   tests/canvas_test.cpp
   tests/mat_test.cpp
   tests/ray_test.cpp
+  tests/lighting_test.cpp
   src/tuple.cpp 
   src/mat.cpp 
   src/ray.cpp
   src/common.cpp 
   src/canvas.cpp 
+  src/lighting.cpp
 )
 
 target_link_libraries(

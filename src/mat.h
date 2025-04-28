@@ -108,9 +108,9 @@ template <size_t n>
 mat<n> transpose(const mat<n>& m)
 {
     mat<n> new_m;
-    for(int i = 0; i != n; i++)
+    for(size_t i = 0; i != n; i++)
     {
-        for(int j = 0; j != n; j++)
+        for(size_t j = 0; j != n; j++)
         {
             new_m.at(i, j) = m.at(j, i);
         }
