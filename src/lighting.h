@@ -4,4 +4,11 @@
 
 struct sphere;
 
-tuple normal_at(const sphere& s, tuple point);
+struct point_light
+{
+    tuple position  = make_point();
+    tuple intensity = color::white();
+};
+
+tuple normal(const sphere& s, tuple point);
+tuple reflect(const tuple& in, const tuple& normal);

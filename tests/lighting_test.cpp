@@ -7,40 +7,57 @@
 
 static constexpr auto PI = std::numbers::pi_v<float>;
 
-TEST(normal, CenteredUnitSphere)
+TEST(lighting, CenteredUnitSphere)
 {
     sphere s;
 
-    tuple normal = normal_at(s, make_point(1, 0, 0));
+    tuple n = normal(s, make_point(1, 0, 0));
 
-    EXPECT_EQ(normal, make_vector(1, 0, 0));
+    EXPECT_EQ(n, make_vector(1, 0, 0));
 
-    normal = normal_at(s, make_point(0, 1, 0));
+    n = normal(s, make_point(0, 1, 0));
 
-    EXPECT_EQ(normal, make_vector(0, 1, 0));
+    EXPECT_EQ(n, make_vector(0, 1, 0));
 
-    normal = normal_at(s, make_point(0, 0, 1));
+    n = normal(s, make_point(0, 0, 1));
 
-    EXPECT_EQ(normal, make_vector(0, 0, 1));
+    EXPECT_EQ(n, make_vector(0, 0, 1));
 
-    normal = normal_at(s, make_point(std::sqrt(3) / 3.f, std::sqrt(3) / 3.f, std::sqrt(3) / 3.f));
+    n = normal(s, make_point(std::sqrt(3) / 3.f, std::sqrt(3) / 3.f, std::sqrt(3) / 3.f));
 
-    EXPECT_EQ(normal, make_vector(std::sqrt(3) / 3.f, std::sqrt(3) / 3.f, std::sqrt(3) / 3.f));
+    EXPECT_EQ(n, make_vector(std::sqrt(3) / 3.f, std::sqrt(3) / 3.f, std::sqrt(3) / 3.f));
 
-    EXPECT_EQ(normalize(normal), normal);
+    EXPECT_EQ(normalize(n), n);
 }
 
-TEST(normal, TransformedSphere)
+TEST(lighting, TransformedSphere)
 {
     sphere s = sphere(translate(0, 1, 0));
 
-    tuple normal = normal_at(s, make_point(0, 1.70711, -0.70711));
+    tuple n = normal(s, make_point(0, 1.70711, -0.70711));
 
-    EXPECT_EQ(normal, make_vector(0, 0.70711, -0.70711));
+    EXPECT_EQ(n, make_vector(0, 0.70711, -0.70711));
 
     s = sphere(scale(1, 0.5, 1) * rotate_z(PI / 5.f));
 
-    normal = normal_at(s, make_point(0, std::sqrt(2) / 2, -std::sqrt(2) / 2));
+    n = normal(s, make_point(0, std::sqrt(2) / 2, -std::sqrt(2) / 2));
 
-    EXPECT_EQ(normal, make_vector(0, 0.97014, -0.24254));
+    EXPECT_EQ(n, make_vector(0, 0.97014, -0.24254));
+}
+
+TEST(lighting, Reflection)
+{
+    auto v = make_vector(1, -1, 0);
+    auto n = make_vector(0, 1, 0);
+
+    auto r = reflect(v, n);
+
+    EXPECT_EQ(r, make_vector(1, 1, 0));
+
+    v = make_vector(0, -1, 0);
+    n = make_vector(std::sqrt(2) / 2, std::sqrt(2) / 2, 0);
+
+    r = reflect(v, n);
+
+    EXPECT_EQ(r, make_vector(1, 0, 0));
 }

@@ -3,6 +3,7 @@
 #pragma warning(disable : 4514)
 
 #include "mat.h"
+#include "material.h"
 #include "tuple.h"
 
 struct figure
@@ -11,6 +12,7 @@ struct figure
     {
     }
     mat4 transform;
+    material material;
 };
 
 struct sphere : figure

@@ -2,7 +2,7 @@
 
 #include "figures.h"
 
-tuple normal_at(const sphere& s, tuple point)
+tuple normal(const sphere& s, tuple point)
 {
     // Transform point to object space
     point = inverse(s.transform) * point;
@@ -15,4 +15,9 @@ tuple normal_at(const sphere& s, tuple point)
     normal   = normalize(normal);
 
     return normal;
+}
+
+tuple reflect(const tuple& in, const tuple& normal)
+{
+    return in - normal * 2 * dot(in, normal);
 }
