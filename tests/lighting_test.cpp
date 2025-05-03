@@ -61,3 +61,73 @@ TEST(lighting, Reflection)
 
     EXPECT_EQ(r, make_vector(1, 0, 0));
 }
+
+TEST(lighting, Eye0DegreesLight0DegreesShade)
+{
+    const material material;
+    const tuple point = make_point();
+
+    tuple eye         = make_vector(0, 0, -1);
+    tuple normal      = make_vector(0, 0, -1);
+    point_light light = point_light{make_point(0, 0, -10)};
+
+    color result = shade(material, light, eye, point, normal);
+
+    EXPECT_EQ(result, color(1.9, 1.9, 1.9));
+}
+
+TEST(lighting, Eye45DegreesLight0DegreesShade)
+{
+    const material material;
+    const tuple point = make_point();
+
+    tuple eye         = make_vector(0, std::sqrt(2.0f) / 2.0f, -std::sqrt(2.0f) / 2.0f);
+    tuple normal      = make_vector(0, 0, -1);
+    point_light light = point_light{make_point(0, 0, -10)};
+
+    color result = shade(material, light, eye, point, normal);
+
+    EXPECT_EQ(result, color(1.0, 1.0, 1.0));
+}
+
+TEST(lighting, Eye0DegreesLight45DegreesShade)
+{
+    const material material;
+    const tuple point = make_point();
+
+    tuple eye         = make_vector(0, 0, -1);
+    tuple normal      = make_vector(0, 0, -1);
+    point_light light = point_light{make_point(0, 10, -10)};
+
+    color result = shade(material, light, eye, point, normal);
+
+    EXPECT_EQ(result, color(std::sqrt(2) / 2 * 0.9 + 0.1, std::sqrt(2) / 2 * 0.9 + 0.1, std::sqrt(2) / 2 * 0.9 + 0.1));
+}
+
+TEST(lighting, EyeMinus45DegreesLight45DegreesShade)
+{
+    const material material;
+    const tuple point = make_point();
+
+    tuple eye         = make_vector(0, -std::sqrt(2.0f) / 2.0f, -std::sqrt(2.0f) / 2.0f);
+    tuple normal      = make_vector(0, 0, -1);
+    point_light light = point_light{make_point(0, 10, -10)};
+
+    color result = shade(material, light, eye, point, normal);
+
+    EXPECT_EQ(result, color(1.63639f, 1.63639f, 1.63639f));
+}
+
+TEST(lighting, Eye0DegreesLight180DegreesShade)
+{
+    const material material;
+    const tuple point = make_point();
+
+    tuple eye         = make_vector(0, 0, -1);
+    tuple normal      = make_vector(0, 0, -1);
+    point_light light = point_light{make_point(0, 0, 10)};
+
+    color result = shade(material, light, eye, point, normal);
+
+    EXPECT_EQ(result, color(0.1f, 0.1f, 0.1f));
+}

@@ -10,8 +10,6 @@ int main()
 
     static sphere s;
 
-    std::cout << s.transform << std::endl;
-
     c.for_each_pixel([](int x, int y) {
         static const auto ray_origin           = make_point(0, 0, -5);
         static const auto wall_z               = 10.f;
