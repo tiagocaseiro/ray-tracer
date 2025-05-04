@@ -5,6 +5,8 @@
 #include "figures.h"
 #include "lighting.h"
 
+using namespace rt;
+
 static constexpr auto PI = std::numbers::pi_v<float>;
 
 TEST(lighting, CenteredUnitSphere)

@@ -2,54 +2,77 @@
 
 #include "mat.h"
 
-tuple position(const ray& r, const float t)
+namespace rt
 {
-    return r.origin + r.direction * t;
-}
-
-std::vector<intersection> intersects(const ray& r1, const sphere& s)
-{
-    // Transform ray to sphere object space
-    ray r = inverse(s.transform) * r1;
-
-    auto sphere_to_ray = r.origin - s.centre;
-
-    auto a = dot(r.direction, r.direction);
-    auto b = 2 * dot(r.direction, sphere_to_ray);
-    auto c = dot(sphere_to_ray, sphere_to_ray) - 1;
-
-    auto discriminant = b * b - 4 * a * c;
-
-    if(discriminant < 0)
+    tuple position(const ray& r, const float t)
     {
-        return {};
+        return r.origin + r.direction * t;
     }
 
-    auto t0 = (-b - std::sqrt(discriminant)) / (2 * a);
-    auto t1 = (-b + std::sqrt(discriminant)) / (2 * a);
-
-    const auto int0 = intersection{t0, &s};
-    const auto int1 = intersection{t1, &s};
-
-    return {int0, int1};
-}
-
-std::optional<intersection> hit(const std::vector<intersection>& intersections)
-{
-    std::optional<intersection> inter;
-
-    for(auto it = std::begin(intersections); it != std::end(intersections); it++)
+    std::vector<intersection> intersects(const ray&, std::vector<figure_ptr> figures)
     {
-        if(it->t < 0)
+        std::vector<intersection> intersections;
+        for(const figure_ptr& f : figures)
         {
-            continue;
-        }
+            if(f == nullptr)
+            {
+                continue;
+            }
 
-        if(inter == std::nullopt || inter->t > it->t)
-        {
-            inter = *it;
+            if(std::shared_ptr<sphere> s = std::dynamic_pointer_cast<sphere>(f))
+            {
+                // for(intersects(r, *s))
+                // {
+                // }
+            }
         }
+        return intersections;
     }
 
-    return inter;
-}
+    std::vector<intersection> intersects(const ray& r1, const sphere& s)
+    {
+        // Transform ray to sphere object space
+        ray r = inverse(s.transform) * r1;
+
+        auto sphere_to_ray = r.origin - s.centre;
+
+        auto a = dot(r.direction, r.direction);
+        auto b = 2 * dot(r.direction, sphere_to_ray);
+        auto c = dot(sphere_to_ray, sphere_to_ray) - 1;
+
+        auto discriminant = b * b - 4 * a * c;
+
+        if(discriminant < 0)
+        {
+            return {};
+        }
+
+        auto t0 = (-b - std::sqrt(discriminant)) / (2 * a);
+        auto t1 = (-b + std::sqrt(discriminant)) / (2 * a);
+
+        const auto int0 = intersection{t0, &s};
+        const auto int1 = intersection{t1, &s};
+
+        return {int0, int1};
+    }
+
+    std::optional<intersection> hit(const std::vector<intersection>& intersections)
+    {
+        std::optional<intersection> inter;
+
+        for(auto it = std::begin(intersections); it != std::end(intersections); it++)
+        {
+            if(it->t < 0)
+            {
+                continue;
+            }
+
+            if(inter == std::nullopt || inter->t > it->t)
+            {
+                inter = *it;
+            }
+        }
+
+        return inter;
+    }
+} // namespace rt
