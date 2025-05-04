@@ -23,7 +23,5 @@ struct intersection
 };
 
 [[nodiscard]] tuple position(const ray& r, const float t);
-
 [[nodiscard]] std::vector<intersection> intersects(const ray& r, const sphere& s);
-
 [[nodiscard]] std::optional<intersection> hit(const std::vector<intersection>& intersections);

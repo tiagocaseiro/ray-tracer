@@ -11,19 +11,19 @@ TEST(lighting, CenteredUnitSphere)
 {
     sphere s;
 
-    tuple n = normal(s, make_point(1, 0, 0));
+    tuple n = normal(&s, make_point(1, 0, 0));
 
     EXPECT_EQ(n, make_vector(1, 0, 0));
 
-    n = normal(s, make_point(0, 1, 0));
+    n = normal(&s, make_point(0, 1, 0));
 
     EXPECT_EQ(n, make_vector(0, 1, 0));
 
-    n = normal(s, make_point(0, 0, 1));
+    n = normal(&s, make_point(0, 0, 1));
 
     EXPECT_EQ(n, make_vector(0, 0, 1));
 
-    n = normal(s, make_point(std::sqrt(3) / 3.f, std::sqrt(3) / 3.f, std::sqrt(3) / 3.f));
+    n = normal(&s, make_point(std::sqrt(3) / 3.f, std::sqrt(3) / 3.f, std::sqrt(3) / 3.f));
 
     EXPECT_EQ(n, make_vector(std::sqrt(3) / 3.f, std::sqrt(3) / 3.f, std::sqrt(3) / 3.f));
 
@@ -34,13 +34,13 @@ TEST(lighting, TransformedSphere)
 {
     sphere s = sphere(translate(0, 1, 0));
 
-    tuple n = normal(s, make_point(0, 1.70711, -0.70711));
+    tuple n = normal(&s, make_point(0, 1.70711, -0.70711));
 
     EXPECT_EQ(n, make_vector(0, 0.70711, -0.70711));
 
     s = sphere(scale(1, 0.5, 1) * rotate_z(PI / 5.f));
 
-    n = normal(s, make_point(0, std::sqrt(2) / 2, -std::sqrt(2) / 2));
+    n = normal(&s, make_point(0, std::sqrt(2) / 2, -std::sqrt(2) / 2));
 
     EXPECT_EQ(n, make_vector(0, 0.97014, -0.24254));
 }

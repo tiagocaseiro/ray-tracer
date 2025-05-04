@@ -8,11 +8,23 @@
 
 struct figure
 {
-    figure(const mat4& _transform = mat4::identity()) : transform(_transform)
+    figure(const material& _material, const mat4& _transform) : mat(_material), transform(_transform)
     {
     }
-    mat4 transform;
-    material material;
+    explicit figure(const mat4& _transform) : figure(material(), _transform)
+    {
+    }
+
+    explicit figure(const material& _material) : figure(_material, mat4::identity())
+    {
+    }
+
+    figure() = default;
+
+    virtual ~figure() = default;
+
+    material mat;
+    mat4 transform = mat4::identity();
 };
 
 struct sphere : figure
