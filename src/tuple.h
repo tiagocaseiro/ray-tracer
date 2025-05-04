@@ -2,64 +2,60 @@
 
 #include <iostream>
 
-namespace rt
+struct tuple
 {
-    struct tuple
-    {
-        explicit tuple(const float _x = 0, const float _y = 0, const float _z = 0, const float _w = 0);
+    explicit tuple(const float _x = 0, const float _y = 0, const float _z = 0, const float _w = 0);
 
-        union {
-            float x = 0.0, r;
-        };
-        union {
-            float y = 0.0, g;
-        };
-        union {
-            float z = 0.0, b;
-        };
-        union {
-            float w = 0.0, a;
-        };
-
-        static tuple zero();
+    union {
+        float x = 0.0, r;
+    };
+    union {
+        float y = 0.0, g;
+    };
+    union {
+        float z = 0.0, b;
+    };
+    union {
+        float w = 0.0, a;
     };
 
-    tuple make_point(const float x = 0, const float y = 0, const float z = 0);
-    tuple make_vector(const float x = 0, const float y = 0, const float z = 0);
+    static tuple zero();
+};
 
-    struct color : tuple
-    {
-        color(const float, const float, const float);
-        color(const tuple&);
-        color() = default;
+tuple make_point(const float x = 0, const float y = 0, const float z = 0);
+tuple make_vector(const float x = 0, const float y = 0, const float z = 0);
 
-        static const color& black();
-        static const color& white();
-        static const color& red();
-        static const color& green();
-        static const color& blue();
-        static const color& yellow();
-    };
+struct color : tuple
+{
+    color(const float, const float, const float);
+    color(const tuple&);
+    color() = default;
 
-    color operator*(const color&, const color&);
+    static const color& black();
+    static const color& white();
+    static const color& red();
+    static const color& green();
+    static const color& blue();
+    static const color& yellow();
+};
 
-    bool operator==(const tuple&, const tuple&);
-    bool operator!=(const tuple&, const tuple&);
-    bool is_point(const tuple&);
-    bool is_vector(const tuple&);
+color operator*(const color&, const color&);
 
-    float length(const tuple&);
-    float dot(const tuple&, const tuple&);
+bool operator==(const tuple&, const tuple&);
+bool operator!=(const tuple&, const tuple&);
+bool is_point(const tuple&);
+bool is_vector(const tuple&);
 
-    tuple operator+(const tuple&, const tuple&);
-    tuple operator-(const tuple&, const tuple&);
-    tuple operator*(const tuple&, const float);
-    tuple operator*(float, const tuple&);
-    tuple operator/(const tuple&, const float);
-    tuple normalize(const tuple&);
-    tuple cross(const tuple&, const tuple&);
-    tuple operator-(const tuple&);
+float length(const tuple&);
+float dot(const tuple&, const tuple&);
 
-} // namespace rt
+tuple operator+(const tuple&, const tuple&);
+tuple operator-(const tuple&, const tuple&);
+tuple operator*(const tuple&, const float);
+tuple operator*(float, const tuple&);
+tuple operator/(const tuple&, const float);
+tuple normalize(const tuple&);
+tuple cross(const tuple&, const tuple&);
+tuple operator-(const tuple&);
 
-std::ostream& operator<<(std::ostream& os, const rt::tuple&);
+std::ostream& operator<<(std::ostream& os, const tuple&);

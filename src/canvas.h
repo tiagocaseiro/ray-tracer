@@ -7,27 +7,23 @@
 
 #include "tuple.h"
 
-namespace rt
+struct canvas
 {
-    struct canvas
-    {
-        canvas(const int _width, const int _height, const color& default_color = color::black());
+    canvas(const int _width, const int _height, const color& default_color = color::black());
 
-        int width;
-        int height;
+    int width;
+    int height;
 
-        void paint_pixel(const int col, const int row, const color&);
-        void save_to_file(std::filesystem::path);
+    void paint_pixel(const int col, const int row, const color&);
+    void save_to_file(std::filesystem::path);
 
-        void for_each_pixel(std::function<void(int, int)>);
+    void for_each_pixel(std::function<void(int, int)>);
 
-        const color& pixel_at(const int col, const int row);
-        const std::vector<color>& get_pixels() const;
+    const color& pixel_at(const int col, const int row);
+    const std::vector<color>& get_pixels() const;
 
-    private:
-        std::vector<color> m_pixels;
-    };
+private:
+    std::vector<color> m_pixels;
+};
 
-} // namespace rt
-
-std::ostream& operator<<(std::ostream& os, const rt::canvas&);
+std::ostream& operator<<(std::ostream& os, const canvas&);

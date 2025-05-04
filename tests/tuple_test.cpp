@@ -6,8 +6,6 @@
 #include "common.h"
 #include "tuple.h"
 
-using namespace rt;
-
 // Demonstrate some basic assertions.
 TEST(tuple, IsPoint)
 {

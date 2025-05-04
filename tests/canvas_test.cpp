@@ -6,8 +6,6 @@
 #include "canvas.h"
 #include "common.h"
 
-using namespace rt;
-
 // Demonstrate some basic assertions.
 TEST(canvas, Ctor)
 {

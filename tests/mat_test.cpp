@@ -4,12 +4,10 @@
 #include <numbers>
 #include <sstream>
 
-
 #include "mat.h"
 #include "tuple.h"
 
 using namespace std::numbers;
-using namespace rt;
 
 TEST(mat, At)
 {

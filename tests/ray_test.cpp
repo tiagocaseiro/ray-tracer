@@ -6,8 +6,6 @@
 #include "mat.h"
 #include "ray.h"
 
-using namespace rt;
-
 TEST(ray, Ctor)
 {
     tuple origin    = make_point(1, 2, 3);
