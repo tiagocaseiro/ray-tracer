@@ -29,7 +29,7 @@ int main()
         const ray r = ray{ray_origin, ray_direction};
 
         color col = color::black();
-        if(std::optional<intersection> hit_data = hit(intersects(r, s)))
+        if(std::optional<intersection> hit_data = on_hit(intersects(r, s)))
         {
             const tuple hit_point = r.origin + r.direction * hit_data->t;
             const tuple n         = normal(s, hit_point);
