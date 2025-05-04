@@ -23,7 +23,17 @@ struct intersection
     const figure* figure = nullptr;
 };
 
+struct hit
+{
+    hit(const intersection& _intersection, const ray& r);
+    intersection inter;
+    tuple point;
+    tuple eye_direction;
+    tuple norm;
+    bool inside = false;
+};
+
 [[nodiscard]] tuple position(const ray& r, const float t);
 [[nodiscard]] std::vector<intersection> intersects(const ray& r, const sphere& s);
-[[nodiscard]] std::vector<intersection> intersects(const ray& r, const world& world);
-[[nodiscard]] std::optional<intersection> hit(const std::vector<intersection>& intersections);
+[[nodiscard]] std::vector<hit> hits(const ray& r, const world& w);
+[[nodiscard]] std::optional<intersection> on_hit(const std::vector<intersection>& intersections);

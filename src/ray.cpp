@@ -1,5 +1,6 @@
 #include "ray.h"
 
+#include "lighting.h"
 #include "mat.h"
 #include "world.h"
 
@@ -32,12 +33,26 @@ std::vector<intersection> intersects(const ray& r1, const sphere& s)
     return {intersection{t0, &s}, intersection{t1, &s}};
 }
 
-std::vector<intersection> intersects(const ray&, const world&)
+std::vector<hit> hits(const ray& r, const world& w)
 {
-    return {};
+    std::vector<hit> hits;
+
+    for(const sphere& s : w.spheres)
+    {
+        for(const intersection& i : intersects(r, s))
+        {
+            hits.emplace_back(i, r);
+        }
+    }
+
+    std::ranges::sort(hits, [](const hit& a, const hit& b) {
+        return a.inter.t < b.inter.t;
+    });
+
+    return hits;
 }
 
-std::optional<intersection> hit(const std::vector<intersection>& intersections)
+std::optional<intersection> on_hit(const std::vector<intersection>& intersections)
 {
     std::optional<intersection> inter;
 
@@ -55,4 +70,17 @@ std::optional<intersection> hit(const std::vector<intersection>& intersections)
     }
 
     return inter;
+}
+
+hit::hit(const intersection& _inter, const ray& r)
+    : inter(_inter),
+      point(position(r, _inter.t)),
+      eye_direction(-normalize(r.direction)),
+      norm(normal(*_inter.figure, point)),
+      inside(dot(norm, eye_direction) < 0)
+{
+    if(inside)
+    {
+        norm = -norm;
+    }
 }
