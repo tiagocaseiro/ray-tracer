@@ -47,9 +47,9 @@ color shade(const material& material, const point_light& light, const tuple& eye
     return ambient + diffuse + reflected;
 }
 
-tuple normal(const figure* f, tuple point)
+tuple normal(const figure& f, tuple point)
 {
-    if(const sphere* s = dynamic_cast<const sphere*>(f))
+    if(const sphere* s = dynamic_cast<const sphere*>(&f))
     {
         return normal(*s, point);
     }

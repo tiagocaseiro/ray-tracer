@@ -1,32 +1,11 @@
 #include "ray.h"
 
 #include "mat.h"
+#include "world.h"
 
 tuple position(const ray& r, const float t)
 {
     return r.origin + r.direction * t;
-}
-
-std::vector<intersection> intersects(const ray& ray, std::vector<figure_ptr> figures)
-{
-    std::vector<intersection> intersections;
-    for(const figure_ptr& f : figures)
-    {
-        if(f == nullptr)
-        {
-            continue;
-        }
-
-        if(std::shared_ptr<sphere> s = std::dynamic_pointer_cast<sphere>(f))
-        {
-            for(const intersection& intersection : intersects(ray, *s))
-            {
-                intersections.push_back(intersection);
-            }
-        }
-    }
-
-    return intersections;
 }
 
 std::vector<intersection> intersects(const ray& r1, const sphere& s)
@@ -50,10 +29,12 @@ std::vector<intersection> intersects(const ray& r1, const sphere& s)
     auto t0 = (-b - std::sqrt(discriminant)) / (2 * a);
     auto t1 = (-b + std::sqrt(discriminant)) / (2 * a);
 
-    const auto int0 = intersection{t0, &s};
-    const auto int1 = intersection{t1, &s};
+    return {intersection{t0, &s}, intersection{t1, &s}};
+}
 
-    return {int0, int1};
+std::vector<intersection> intersects(const ray&, const world&)
+{
+    return {};
 }
 
 std::optional<intersection> hit(const std::vector<intersection>& intersections)

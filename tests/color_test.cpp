@@ -6,7 +6,6 @@
 #include "common.h"
 #include "tuple.h"
 
-// Demonstrate some basic assertions.
 TEST(color, Ctor)
 {
     color c{-0.5f, 0.4f, 1.7f};

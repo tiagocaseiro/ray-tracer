@@ -6,7 +6,6 @@
 #include "canvas.h"
 #include "common.h"
 
-// Demonstrate some basic assertions.
 TEST(canvas, Ctor)
 {
     canvas c{10, 20};

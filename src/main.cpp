@@ -11,7 +11,7 @@ int main()
 
     static const sphere s = sphere(material(color(1.f, 0.2f, 1.f)));
 
-    static const point_light light = point_light{make_point(-10, 10, -10)};
+    static const point_light light = point_light{make_point(-10, 10, -10), color::white()};
 
     c.for_each_pixel([](int x, int y) {
         static const auto ray_origin           = make_point(0, 0, -5);
@@ -29,14 +29,14 @@ int main()
         const ray r = ray{ray_origin, ray_direction};
 
         color col = color::black();
-        // if(std::optional<intersection> hit_data = hit(intersects(r, s)))
-        // {
-        //     const tuple hit_point = r.origin + r.direction * hit_data->t;
-        //     const tuple n         = normal(hit_data->figure, hit_point);
-        //     const tuple eye       = -r.direction;
+        if(std::optional<intersection> hit_data = hit(intersects(r, s)))
+        {
+            const tuple hit_point = r.origin + r.direction * hit_data->t;
+            const tuple n         = normal(s, hit_point);
+            const tuple eye       = -r.direction;
 
-        //     col = shade(hit_data->figure->mat, light, eye, hit_point, n);
-        // }
+            col = shade(hit_data->figure->material, light, eye, hit_point, n);
+        }
         c.paint_pixel(x, y, col);
     });
 

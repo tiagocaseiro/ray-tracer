@@ -6,7 +6,6 @@
 #include "common.h"
 #include "tuple.h"
 
-// Demonstrate some basic assertions.
 TEST(tuple, IsPoint)
 {
     tuple v{4.3f, -4.2f, 3.1f, 1.0f};
