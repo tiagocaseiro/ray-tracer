@@ -18,12 +18,12 @@ bool is_vector(const tuple& tuple)
     return equals(tuple.w, 0.0f);
 }
 
-tuple make_point(const float x, const float y, const float z)
+tuple point(const float x, const float y, const float z)
 {
     return tuple(x, y, z, 1.0f);
 }
 
-tuple make_vector(const float x, const float y, const float z)
+tuple vector(const float x, const float y, const float z)
 {
     return tuple(x, y, z, 0.0f);
 }
@@ -33,7 +33,7 @@ tuple tuple::zero()
     return tuple();
 }
 
-color::color(const float _r, const float _g, const float _b) : tuple(make_vector(_r, _g, _b))
+color::color(const float _r, const float _g, const float _b) : tuple(vector(_r, _g, _b))
 {
 }
 
@@ -126,6 +126,13 @@ float dot(const tuple& a, const tuple& b)
     return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 }
 
+tuple& operator+=(tuple& a, const tuple& b)
+{
+    a = a + b;
+
+    return a;
+}
+
 tuple normalize(const tuple& t)
 {
     const float l = length(t);
@@ -134,7 +141,7 @@ tuple normalize(const tuple& t)
 
 tuple cross(const tuple& a, const tuple& b)
 {
-    return make_vector(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+    return vector(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
 }
 
 tuple operator-(const tuple& tuple)

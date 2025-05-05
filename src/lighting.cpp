@@ -2,6 +2,8 @@
 
 #include "figures.h"
 #include "material.h"
+#include "ray.h"
+#include "world.h"
 
 tuple normal(const sphere& s, tuple point)
 {
@@ -42,9 +44,25 @@ color shade(const material& material, const point_light& light, const tuple& eye
 
     const float factor = std::pow(reflected_eye_dot, material.shininess);
 
-    const color reflected = light.intensity * material.specular * factor;
+    const color specular = light.intensity * material.specular * factor;
 
-    return ambient + diffuse + reflected;
+    std::cout << "effective_color: " << effective_color << std::endl;
+    std::cout << "ambient: " << ambient << std::endl;
+    std::cout << "diffuse: " << diffuse << std::endl;
+    std::cout << "specular: " << specular << std::endl;
+    return ambient + diffuse + specular;
+}
+
+color shade(const world& world, const hit& h)
+{
+    color result = color::black();
+
+    for(const point_light& light : world.point_lights)
+    {
+        result += shade(h.figure->material, light, h.eye_direction, h.point, h.norm);
+    }
+
+    return result;
 }
 
 tuple normal(const figure& f, tuple point)
@@ -54,5 +72,24 @@ tuple normal(const figure& f, tuple point)
         return normal(*s, point);
     }
 
-    return make_vector();
+    return vector();
+}
+
+color shade(const world& w, const ray& r)
+{
+    std::cout << r << std::endl;
+    std::vector<hit> h = hits(r, w);
+    if(h.empty())
+    {
+        return color::black();
+    }
+
+    for(const auto& hit : h)
+    {
+        if(hit.t > 0)
+        {
+            return shade(w, hit);
+        }
+    }
+    return color::black();
 }

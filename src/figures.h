@@ -19,7 +19,11 @@ struct figure
     {
     }
 
-    figure() = default;
+    figure()                         = default;
+    figure(const figure&)            = default;
+    figure(figure&&)                 = default;
+    figure& operator=(const figure&) = default;
+    figure& operator=(figure&&)      = default;
 
     virtual ~figure() = default;
 
@@ -31,7 +35,7 @@ struct sphere : figure
 {
     using figure::figure;
 
-    inline static const tuple centre = make_point();
+    inline static const tuple centre = point();
     inline static const float radius = 1.0f;
 };
 

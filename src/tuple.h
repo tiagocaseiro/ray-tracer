@@ -22,12 +22,12 @@ struct tuple
     static tuple zero();
 };
 
-tuple make_point(const float x = 0, const float y = 0, const float z = 0);
-tuple make_vector(const float x = 0, const float y = 0, const float z = 0);
+tuple point(const float x = 0, const float y = 0, const float z = 0);
+tuple vector(const float x = 0, const float y = 0, const float z = 0);
 
 struct color : tuple
 {
-    color(const float, const float, const float);
+    color(const float _r, const float _g, const float _b);
     color(const tuple&);
     color() = default;
 
@@ -50,6 +50,7 @@ float length(const tuple&);
 float dot(const tuple&, const tuple&);
 
 tuple operator+(const tuple&, const tuple&);
+tuple& operator+=(tuple&, const tuple&);
 tuple operator-(const tuple&, const tuple&);
 tuple operator*(const tuple&, const float);
 tuple operator*(float, const tuple&);

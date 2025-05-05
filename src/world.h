@@ -10,6 +10,6 @@ struct figure;
 
 struct world
 {
-    point_light point_light;
+    std::vector<point_light> point_lights;
     std::vector<sphere> spheres;
 };

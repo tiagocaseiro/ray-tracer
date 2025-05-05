@@ -13,8 +13,8 @@ struct world;
 
 struct ray
 {
-    tuple origin    = make_point();
-    tuple direction = make_vector();
+    tuple origin    = point();
+    tuple direction = vector();
 };
 
 struct intersection
@@ -26,7 +26,8 @@ struct intersection
 struct hit
 {
     hit(const intersection& _intersection, const ray& r);
-    intersection inter;
+    float t              = 0.0f;
+    const figure* figure = nullptr;
     tuple point;
     tuple eye_direction;
     tuple norm;
@@ -36,4 +37,5 @@ struct hit
 [[nodiscard]] tuple position(const ray& r, const float t);
 [[nodiscard]] std::vector<intersection> intersects(const ray& r, const sphere& s);
 [[nodiscard]] std::vector<hit> hits(const ray& r, const world& w);
-[[nodiscard]] std::optional<intersection> on_hit(const std::vector<intersection>& intersections);
+
+std::ostream& operator<<(std::ostream& os, const ray&);

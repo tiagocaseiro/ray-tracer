@@ -46,34 +46,15 @@ std::vector<hit> hits(const ray& r, const world& w)
     }
 
     std::ranges::sort(hits, [](const hit& a, const hit& b) {
-        return a.inter.t < b.inter.t;
+        return a.t < b.t;
     });
 
     return hits;
 }
 
-std::optional<intersection> on_hit(const std::vector<intersection>& intersections)
-{
-    std::optional<intersection> inter;
-
-    for(auto it = std::begin(intersections); it != std::end(intersections); it++)
-    {
-        if(it->t < 0)
-        {
-            continue;
-        }
-
-        if(inter == std::nullopt || inter->t > it->t)
-        {
-            inter = *it;
-        }
-    }
-
-    return inter;
-}
-
 hit::hit(const intersection& _inter, const ray& r)
-    : inter(_inter),
+    : t(_inter.t),
+      figure(_inter.figure),
       point(position(r, _inter.t)),
       eye_direction(-normalize(r.direction)),
       norm(normal(*_inter.figure, point)),
@@ -81,6 +62,13 @@ hit::hit(const intersection& _inter, const ray& r)
 {
     if(inside)
     {
+        std::cout << std::boolalpha << "inside: " << inside << std::endl;
         norm = -norm;
     }
+}
+
+std::ostream& operator<<(std::ostream& os, const ray& r)
+{
+    os << "[origin: " << r.origin << " direction : " << r.direction << "]";
+    return os;
 }
