@@ -2,10 +2,8 @@ cmake_minimum_required(VERSION 3.31)
 
 project(ray-tracer LANGUAGES CXX)
 
-include_directories(src)
-
 add_executable(ray-tracer 
-  src/main.cpp  
+  main.cpp  
 )
 
 target_compile_options(ray-tracer PRIVATE /Wall /WX)
