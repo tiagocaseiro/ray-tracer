@@ -8,8 +8,13 @@ struct camera
 {
     camera(const canvas& c, const float _fov);
 
-    const float pixel_ratio = 1;
+    float pixel_ratio = 0;
+    float half_width  = 0;
+    float half_height = 0;
     const glm::mat4 transform;
+
+private:
+    void init(const canvas& c, const float _fov);
 };
 
-static float calculate_pixel_ratio(const canvas& c, const float _fov);
+glm::mat4 view_transform();

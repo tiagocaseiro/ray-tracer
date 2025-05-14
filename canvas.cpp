@@ -51,16 +51,16 @@ void canvas::save_to_file(std::filesystem::path path)
     }
 }
 
-void canvas::shade_pixels(const pixel_shade_function& shade_function)
-{
-    for(auto i = 0; i != width; i++)
-    {
-        for(auto j = 0; j != height; j++)
-        {
-            paint_pixel(i, j, shade_function({i, j}));
-        }
-    }
-}
+// void canvas::shade_pixels(const pixel_shade_function& shade_function)
+// {
+//     for(auto i = 0; i != width; i++)
+//     {
+//         for(auto j = 0; j != height; j++)
+//         {
+//             paint_pixel(i, j, shade_function({i, j}));
+//         }
+//     }
+// }
 
 glm::vec3 canvas::pixel_at(const int col, const int row)
 {

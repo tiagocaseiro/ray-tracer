@@ -20,7 +20,7 @@ struct canvas
     void paint_pixel(const int col, const int row, const glm::vec3&);
     void save_to_file(std::filesystem::path);
 
-    void shade_pixels(const pixel_shade_function& shade_function);
+    void shade_pixels();
 
     glm::vec3 pixel_at(const int col, const int row);
 

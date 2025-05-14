@@ -4,13 +4,8 @@
 
 int main()
 {
-    canvas c   = canvas(640, 360);
-    camera cam = camera(c, 45.0);
-
-    c.shade_pixels([&cam](const glm::vec2& pixel) {
-        return color::BLACK;
-    });
-
-    c.save_to_file("result.ppm");
+    const int image_width    = 400;
+    const float aspect_ratio = 16.f / 9.f;
+    const int image_height   = image_width / aspect_ratio;
     return 0;
 }
