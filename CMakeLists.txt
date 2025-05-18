@@ -6,6 +6,8 @@ add_executable(ray-tracer
   main.cpp  
   ray.cpp  
   canvas.cpp  
+  figures.cpp  
+  camera.cpp
 )
  
 set(CMAKE_CXX_STANDARD 20)

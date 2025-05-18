@@ -2,8 +2,11 @@
 
 #include <glm/glm.hpp>
 
-namespace color
+using color = glm::vec4;
+
+namespace colors
 {
-    inline glm::vec4 WHITE = glm::vec4(1, 1, 1, 1);
-    inline glm::vec4 BLACK = glm::vec4(0, 0, 0, 1);
-} // namespace color
+    inline color WHITE = glm::vec4(1, 1, 1, 1);
+    inline color BLACK = glm::vec4(0, 0, 0, 1);
+    inline color RED   = glm::vec4(1, 0, 0, 1);
+} // namespace colors

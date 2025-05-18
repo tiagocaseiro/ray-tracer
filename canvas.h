@@ -12,17 +12,13 @@
 using pixel_shade_function = std::function<glm::vec3(const glm::vec2&)>;
 struct canvas
 {
-    canvas(const int _width, const int _height, const glm::vec3& default_color = color::BLACK);
+    canvas(const int _width, const int _height, const color& default_color = colors::BLACK);
 
-    int width;
-    int height;
-
-    void paint_pixel(const int col, const int row, const glm::vec3&);
+    void paint_pixel(const int col, const int row, const color& c);
     void save_to_file(std::filesystem::path);
 
-    void shade_pixels();
-
-    glm::vec3 pixel_at(const int col, const int row);
+    const int width;
+    const int height;
 
     friend std::ostream& operator<<(std::ostream& os, const canvas&);
 
