@@ -7,6 +7,7 @@ add_executable(ray-tracer
   ray.cpp  
   canvas.cpp  
   figures.cpp  
+  common.cpp  
   camera.cpp
 )
  
