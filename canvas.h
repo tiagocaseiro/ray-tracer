@@ -14,7 +14,7 @@ struct canvas
 {
     canvas(const int _width, const int _height, const color& default_color = colors::BLACK);
 
-    void paint_pixel(const int col, const int row, const color& c);
+    void paint_pixel(const int col, const int row, color c);
     void save_to_file(std::filesystem::path);
 
     const int width;

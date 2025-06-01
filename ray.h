@@ -1,8 +1,12 @@
 #pragma once
 
+#include <memory>
+#include <optional>
+
 #include <glm/glm.hpp>
 
 struct sphere;
+struct material;
 
 struct ray
 {
@@ -12,5 +16,12 @@ struct ray
     const glm::vec4 direction;
 };
 
+struct hit
+{
+    const sphere& sphere;
+    const glm::vec4 normal;
+    const glm::vec4 point;
+};
+
 [[nodiscard]] glm::vec4 position(const ray& r, const float t);
-[[nodiscard]] std::vector<float> hits(const sphere& s, const ray& r);
+std::optional<hit> on_hit(const ray& r, const std::vector<sphere>& spheres, const float t_min, const float t_max);

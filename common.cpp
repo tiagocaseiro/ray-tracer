@@ -24,3 +24,19 @@ std::ostream& operator<<(std::ostream& os, const glm::vec4& v)
 
     return os;
 }
+
+bool near_zero(const glm::vec4 v)
+{
+    // Return true if the vector is close to zero in all dimensions.
+    static constexpr auto s = 1e-8;
+    return (std::fabs(v[0]) < s) && (std::fabs(v[1]) < s) && (std::fabs(v[2]) < s);
+}
+
+glm::vec4 reflect(const glm::vec4& vector, const glm::vec4& normal)
+{
+
+    // Project vector onto normal
+    // Negate projection so it points up
+    // Add the projection twice to vector
+    return vector - 2 * glm::dot(vector, normal) * normal;
+}

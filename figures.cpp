@@ -1,8 +1,10 @@
 #include "figures.h"
 
+#include "material.h"
 #include "ray.h"
 
-sphere::sphere(const glm::vec4 _center, const float _radius) : center(_center), radius(_radius)
+sphere::sphere(const glm::vec4& _center, const float _radius, const std::shared_ptr<material>& _mat)
+    : center(_center), radius(_radius), mat(_mat)
 {
 }
 
